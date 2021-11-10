@@ -5,7 +5,7 @@
 //-----------------------------------------------------------------------------
 // DESCRIPTION:   Adapter for MicroFPGA, a FPGA platform using FPGA boards from
 //                Alchitry. The adapter must be used with a special firmware, see:
-//                https://github.com/jdeschamps/MicroFPGA
+//                https://github.com/mufpga/MicroFPGA
 // COPYRIGHT:     EMBL
 // LICENSE:       LGPL
 //
@@ -13,8 +13,8 @@
 //
 //
 
-#ifndef _Mojo_H_
-#define _Mojo_H_
+#ifndef _MicroFPGA_H_
+#define _MicroFPGA_H_
 
 #include "MMDevice.h"
 #include "DeviceBase.h"
@@ -46,6 +46,7 @@ public:
 
    // property handlers
    int OnPort(MM::PropertyBase* pPropt, MM::ActionType eAct);
+   int OnTriggerMode(MM::PropertyBase* pPropt, MM::ActionType eAct);
 
    int PurgeComPortH() {return PurgeComPort(port_.c_str());}
    int SendWriteRequest(long address, long value);
@@ -55,6 +56,9 @@ public:
    int ReadFromComPortH(unsigned char* answer, unsigned maxLen, unsigned long& bytesRead) {
       return ReadFromComPort(port_.c_str(), answer, maxLen, bytesRead);
    }
+   int SetPassiveTrigger();
+   int SetActiveTrigger();
+
    static MMThreadLock& GetLock() {return lock_;}
 
 private:
@@ -68,14 +72,56 @@ private:
    static MMThreadLock lock_;
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////
+//////
+class CameraTrigger : public CGenericBase<CameraTrigger>
+{
+public:
+	CameraTrigger();
+	~CameraTrigger();
+
+	// MMDevice API
+	// ------------
+	int Initialize();
+	int Shutdown();
+
+	void GetName(char* pszName) const;
+	bool Busy() { return busy_; }
+
+	// action interface
+	// ----------------
+	int OnStart(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnPulse(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnPeriod(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnExposure(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnDelay(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnPulseMs(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnPeriodMs(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnExposureMs(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnDelayMs(MM::PropertyBase* pProp, MM::ActionType eAct);
+
+private:
+
+	int WriteToPort(long address, long value);
+	int ReadFromPort(long& answer);
+
+	bool initialized_;
+	bool mode_;
+	bool start_;
+	long pulse_;
+	long period_;
+	long exposure_;
+	long delay_;
+	bool busy_;
+};
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 //////
-class LaserTrig   : public CGenericBase<LaserTrig>  
+class LaserTrigger   : public CGenericBase<LaserTrigger>  
 {
 public:
-   LaserTrig();
-   ~LaserTrig();
+   LaserTrigger();
+   ~LaserTrigger();
   
    // MMDevice API
    // ------------
