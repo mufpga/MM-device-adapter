@@ -291,8 +291,8 @@ int MicroFPGAHub::DetectInstalledDevices()
 		peripherals.push_back(g_DeviceNameLaserTrig);
 		peripherals.push_back(g_DeviceNameCamTrig);
 		
-		// Only the Au and Au+ have an ADC
-		if(id_ == g_id_au || id_ == g_id_aup){
+		// Only the Au, Au+ and Mojo have an ADC
+		if(id_ == g_id_au || id_ == g_id_aup || id_ == g_id_mojo){
 			peripherals.push_back(g_DeviceNameAnalogInput);
 		}
 
