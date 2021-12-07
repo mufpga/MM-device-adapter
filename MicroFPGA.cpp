@@ -1469,7 +1469,7 @@ int Servo::Initialize()
 		nRet = CreateProperty(sstm.str().c_str(), "0", MM::Integer, false, pExAct);
 		if (nRet != DEVICE_OK)
 			return nRet;
-		SetPropertyLimits(sstm.str().c_str(), 0, 65535);
+		SetPropertyLimits(sstm.str().c_str(), 0, 131071);
 	}
 
 	nRet = UpdateStatus();
