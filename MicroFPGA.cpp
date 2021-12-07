@@ -36,6 +36,7 @@ const int g_version = 3;
 const int g_id_au = 79;
 const int g_id_aup = 80;
 const int g_id_cu = 29;
+const int g_id_mojo = 12;
 
 const int g_maxlasers = 8;
 const int g_maxanaloginput = 8;
@@ -257,6 +258,9 @@ int MicroFPGAHub::Initialize()
 		CreateProperty("MicroFPGA ID", "Au+", MM::String, true);
 	}
 	else if (g_id_cu == id_) {
+		CreateProperty("MicroFPGA ID", "Mojo", MM::String, true);
+	}
+	else if (g_id_mojo == id_) {
 		CreateProperty("MicroFPGA ID", "Cu", MM::String, true);
 	}
 	else {
