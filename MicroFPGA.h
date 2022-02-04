@@ -92,13 +92,9 @@ public:
 	// ----------------
 	int OnStart(MM::PropertyBase* pProp, MM::ActionType eAct);
 	int OnPulse(MM::PropertyBase* pProp, MM::ActionType eAct);
-	int OnPeriod(MM::PropertyBase* pProp, MM::ActionType eAct);
+	int OnInterFrame(MM::PropertyBase* pProp, MM::ActionType eAct);
 	int OnExposure(MM::PropertyBase* pProp, MM::ActionType eAct);
 	int OnDelay(MM::PropertyBase* pProp, MM::ActionType eAct);
-	int OnPulseMs(MM::PropertyBase* pProp, MM::ActionType eAct);
-	int OnPeriodMs(MM::PropertyBase* pProp, MM::ActionType eAct);
-	int OnExposureMs(MM::PropertyBase* pProp, MM::ActionType eAct);
-	int OnDelayMs(MM::PropertyBase* pProp, MM::ActionType eAct);
 
 private:
 
@@ -109,7 +105,7 @@ private:
 	bool mode_;
 	bool start_;
 	long pulse_;
-	long period_;
+	long interframe_;
 	long exposure_;
 	long delay_;
 	bool busy_;
