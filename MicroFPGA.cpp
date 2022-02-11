@@ -51,11 +51,11 @@ const int g_offsetaddressTTL = g_offsetaddressLaserSequence+g_maxlasers;
 const int g_offsetaddressServo = g_offsetaddressTTL+g_maxttl;
 const int g_offsetaddressPWM = g_offsetaddressServo+g_maxservos;
 
-const int g_offsetaddressCamTriggerMode = g_offsetaddressPWM + g_maxpwm;
-const int g_offsetaddressCamTriggerStart = g_offsetaddressCamTriggerMode + 1;
+const int g_offsetaddressCamSyncMode = g_offsetaddressPWM + g_maxpwm;
+const int g_offsetaddressCamTriggerStart = g_offsetaddressCamSyncMode + 1;
 const int g_offsetaddressCamPulse = g_offsetaddressCamTriggerStart + 1;
-const int g_offsetaddressCamPeriod = g_offsetaddressCamPulse + 1;
-const int g_offsetaddressCamExposure = g_offsetaddressCamPeriod + 1;
+const int g_offsetaddressCamReadout = g_offsetaddressCamPulse + 1;
+const int g_offsetaddressCamExposure = g_offsetaddressCamReadout + 1;
 const int g_offsetaddressLaserDelay = g_offsetaddressCamExposure + 1;
 
 const int g_offsetaddressAnalogInput = g_offsetaddressLaserDelay + 1;
@@ -411,16 +411,16 @@ int MicroFPGAHub::ReadAnswer(long& ans){
 
 int MicroFPGAHub::SetPassiveTrigger()
 {
-	int ret = SendWriteRequest(g_offsetaddressCamTriggerMode, 0);
+	int ret = SendWriteRequest(g_offsetaddressCamSyncMode, 0);
 	if (ret != DEVICE_OK)
 		return ret;
 
 	return DEVICE_OK;
 }
 
-int MicroFPGAHub::SetActiveTrigger()
+int MicroFPGAHub::SetActiveSync()
 {
-	int ret = SendWriteRequest(g_offsetaddressCamTriggerMode, 1);
+	int ret = SendWriteRequest(g_offsetaddressCamSyncMode, 1);
 	if (ret != DEVICE_OK)
 		return ret;
 
@@ -441,12 +441,12 @@ int MicroFPGAHub::OnPort(MM::PropertyBase* pProp, MM::ActionType pAct)
 	return DEVICE_OK;
 }
 
-int MicroFPGAHub::OnTriggerMode(MM::PropertyBase* pProp, MM::ActionType pAct)
+int MicroFPGAHub::OnSyncMode(MM::PropertyBase* pProp, MM::ActionType pAct)
 {
 	if (pAct == MM::BeforeGet)
 	{
 		
-		int ret = SendReadRequest(g_offsetaddressCamTriggerMode);
+		int ret = SendReadRequest(g_offsetaddressCamSyncMode);
 		if (ret != DEVICE_OK)
 			return ret;
 
@@ -524,17 +524,17 @@ int CameraTrigger::Initialize()
 
 	// pulse
 	pAct = new CPropertyAction(this, &CameraTrigger::OnPulse);
-	nRet = CreateProperty("Pulse (us)", "10", MM::Integer, false, pAct);
+	nRet = CreateProperty("Pulse (us)", "2000", MM::Integer, false, pAct);
 	if (nRet != DEVICE_OK)
 		return nRet;
-	SetPropertyLimits("Pulse (us)", 0, 65535);
+	SetPropertyLimits("Pulse (us)", 0, 1048575);
 
-	// period
-	pAct = new CPropertyAction(this, &CameraTrigger::OnPeriod);
-	nRet = CreateProperty("Inter-frame (us)", "300", MM::Integer, false, pAct);
+	// readout
+	pAct = new CPropertyAction(this, &CameraTrigger::OnReadout);
+	nRet = CreateProperty("Read-out (us)", "1000", MM::Integer, false, pAct);
 	if (nRet != DEVICE_OK)
 		return nRet;
-	SetPropertyLimits("Inter-frame (us)", 0, 65535);
+	SetPropertyLimits("Read-out (us)", 0, 65535);
 
 
 	// exposure
@@ -542,12 +542,12 @@ int CameraTrigger::Initialize()
 	nRet = CreateProperty("Exposure (us)", "25000", MM::Integer, false, pAct);
 	if (nRet != DEVICE_OK)
 		return nRet;
-	SetPropertyLimits("Exposure (us)", 0, 524287);
+	SetPropertyLimits("Exposure (us)", 0, 1048575);
 
 
 	// delay
 	pAct = new CPropertyAction(this, &CameraTrigger::OnDelay);
-	nRet = CreateProperty("Delay (us)", "10", MM::Integer, false, pAct);
+	nRet = CreateProperty("Delay (us)", "500", MM::Integer, false, pAct);
 	if (nRet != DEVICE_OK)
 		return nRet;
 	SetPropertyLimits("Delay (us)", 0, 65535);
@@ -689,7 +689,7 @@ int CameraTrigger::OnPulse(MM::PropertyBase* pProp, MM::ActionType pAct)
 	return DEVICE_OK;
 }
 
-int CameraTrigger::OnInterFrame(MM::PropertyBase* pProp, MM::ActionType pAct)
+int CameraTrigger::OnReadout(MM::PropertyBase* pProp, MM::ActionType pAct)
 {
 	if (pAct == MM::BeforeGet)
 	{
@@ -700,7 +700,7 @@ int CameraTrigger::OnInterFrame(MM::PropertyBase* pProp, MM::ActionType pAct)
 
 		MMThreadGuard myLock(hub->GetLock());
 
-		int ret = hub->SendReadRequest(g_offsetaddressCamPeriod);
+		int ret = hub->SendReadRequest(g_offsetaddressCamReadout);
 		if (ret != DEVICE_OK)
 			return ret;
 
@@ -710,18 +710,18 @@ int CameraTrigger::OnInterFrame(MM::PropertyBase* pProp, MM::ActionType pAct)
 			return ret;
 
 		pProp->Set(answer);
-		interframe_ = answer;
+		readout_ = answer;
 	}
 	else if (pAct == MM::AfterSet)
 	{
 		long pos;
 		pProp->Get(pos);
 
-		int ret = WriteToPort(g_offsetaddressCamPeriod, pos);
+		int ret = WriteToPort(g_offsetaddressCamReadout, pos);
 		if (ret != DEVICE_OK)
 			return ret;
 
-		interframe_ = pos;
+		readout_ = pos;
 	}
 
 	return DEVICE_OK;
