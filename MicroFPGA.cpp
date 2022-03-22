@@ -64,6 +64,7 @@ const int g_address_version = 200;
 const int g_address_id = 201;
 
 ///////////////////// properties
+
 const char* g_mode_0 = "0 - Off";
 const char* g_mode_1 = "1 - On";
 const char* g_mode_2 = "2 - Rising";
@@ -270,12 +271,12 @@ int MicroFPGAHub::Initialize()
 	}
 
 	// By default camera trigger in PASSIVE mode: listens to external input
-	CPropertyAction* pAct = new CPropertyAction(this, &MicroFPGAHub::OnTriggerMode);
+	CPropertyAction* pAct = new CPropertyAction(this, &MicroFPGAHub::OnSyncMode);
 	CreateProperty("Camera trigger", "Passive", MM::String, true, pAct);
 	AddAllowedValue("Camera trigger", "Active");
 	AddAllowedValue("Camera trigger", "Passive");
 
-	ret = SetPassiveTrigger();
+	ret = SetPassiveSync();
 	if (DEVICE_OK != ret)
 		return ret;
 
@@ -408,7 +409,7 @@ int MicroFPGAHub::ReadAnswer(long& ans){
 	return DEVICE_OK;
 }
 
-int MicroFPGAHub::SetPassiveTrigger()
+int MicroFPGAHub::SetPassiveSync()
 {
 	int ret = SendWriteRequest(g_offsetaddressCamSyncMode, 0);
 	if (ret != DEVICE_OK)
@@ -511,7 +512,7 @@ int CameraTrigger::Initialize()
 	CreateHubIDProperty();
 
 	// set to active trigger
-	hub->SetActiveTrigger();
+	hub->SetActiveSync();
 
 	// Start/stop
 	CPropertyAction* pAct = new CPropertyAction(this, &CameraTrigger::OnStart);
