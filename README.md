@@ -1,0 +1,34 @@
+<a href="https://mufpga.github.io/"><img src="https://raw.githubusercontent.com/mufpga/mufpga.github.io/main/img/logo_title.png" alt="Overview"/>
+
+</a>
+
+![version](https://img.shields.io/badge/version-3.1-blue)[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+
+
+# Overview
+
+MicroFPGA is an FPGA-based platform for the electronic control of microscopes. It aims at using affordable FPGA to generate or read signals from a variety of devices, including cameras, lasers, servomotors, filter-wheels, etc. It can be controlled via [Micro-Manager](https://micro-manager.org/MicroFPGA), or its [Java](https://github.com/mufpga/MicroFPGA-java), [Python](https://github.com/mufpga/MicroFPGA-py) and [LabView](https://github.com/mufpga/MicroFPGA-labview) communication libraries, and comes with optional complementary [electronics](https://github.com/mufpga/MicroFPGA-electronics).
+
+Documentation and tutorials are available on [https://mufpga.github.io/](https://mufpga.github.io/).
+
+
+
+<img src="https://raw.githubusercontent.com/mufpga/mufpga.github.io/main/img/figs/G_overview.png" alt="Overview"/>
+
+## Content
+
+This repository contains MicroFPGA device adapter for Micro-Manager. It is distributed with Micro-Manager directly. Should you want to build from sources, clone the [mmCoreAndDevices](https://github.com/micro-manager/mmCoreAndDevices) repository and use VisualStudio to build either the source from mmCoreAndDevices (in `/DeviceAdapters/MicroFPGA/`) or from this repository.
+
+
+
+<!---
+
+## Cite us
+
+Deschamps J, Kieser C, Hoess P, Deguchi T and Ries J, 
+
+--->
+
+MicroFPGA-mm was written by Joran Deschamps, EMBL (2020).
+
