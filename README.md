@@ -2,7 +2,7 @@
 
 </a>
 
-![version](https://img.shields.io/badge/version-3.1-blue)[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![version](https://img.shields.io/badge/version-3.1.0-blue)[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 
 
@@ -22,13 +22,9 @@ This repository contains MicroFPGA device adapter for Micro-Manager. It is distr
 
 
 
-<!---
-
 ## Cite us
+Joran Deschamps, Christian Kieser, Philipp Hoess, Takahiro Deguchi, Jonas Ries, "MicroFPGA: an affordable FPGA platform for microscope control",
+bioRxiv 2022.06.07.495178.
 
-Deschamps J, Kieser C, Hoess P, Deguchi T and Ries J, 
-
---->
 
 MicroFPGA-mm was written by Joran Deschamps, EMBL (2020).
-
